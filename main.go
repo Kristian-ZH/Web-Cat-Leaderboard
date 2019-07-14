@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -72,7 +71,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	for selDB.Next() {
 		err = selDB.Scan(&uid, &firstName, &lastName, &assignmentName, &score)
 		if err != nil {
-			break
+			panic(err.Error())
 		}
 
 		user := User{uid, firstName, lastName}
@@ -130,7 +129,6 @@ func saveSubmissionInTable(user *User, assignmentName string, score float64, tab
 	i := findUserIndex(user, table, usersNum)
 	j := findAssignmentIndex(assignmentName, table, assignmentsNum)
 	(*table)[i][j] = strconv.FormatFloat(score, 'f', 1, 64)
-	fmt.Printf("%s_%s  %s  %f :  i=%d : j=%d\n", user.FirstName, user.LastName, assignmentName, score, i, j)
 }
 
 func findUserIndex(user *User, table *[][]string, usersNum int) int {

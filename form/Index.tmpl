@@ -1,0 +1,17 @@
+{{ define "Index" }}
+  {{ template "Header" }}
+    <table border="1">
+      <thead>
+       </thead>
+       <tbody>
+    {{ range . }}
+      <tr>
+       {{ range . }}
+        <td>{{.}}</td>
+        {{ end }}
+      </tr>
+    {{ end }}
+       </tbody>
+    </table>
+  {{ template "Footer" }}
+{{ end }}

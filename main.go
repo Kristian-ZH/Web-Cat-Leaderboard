@@ -79,13 +79,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		saveSubmissionInTable(&user, assignmentName, score, &table, len(userNames), len(assignmentNames))
 	}
 
-	// for i := 0; i < len(userNames)+1; i++ {
-	// 	for j := 0; j < len(assignmentNames)+1; j++ {
-	// 		fmt.Printf("%s ", table[i][j])
-	// 	}
-	// 	fmt.Println()
-	// }
-
 	tmpl.ExecuteTemplate(w, "Index", table)
 	defer db.Close()
 }

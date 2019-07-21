@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 
 	//Mysql Driver
@@ -9,15 +10,16 @@ import (
 )
 
 var (
-	dbUser = os.Getenv("DB_USERNAME")
-	dbPass = os.Getenv("DB_PASSWORD")
-	dbHost = os.Getenv("DB_HOST")
-	dbName = os.Getenv("DB_NAME")
+	dbUser   = os.Getenv("DB_USERNAME")
+	dbPass   = os.Getenv("DB_PASSWORD")
+	dbName   = os.Getenv("DB_NAME")
+	dbURL    = "tcp(mysql-0.mysql:3306)"
+	dbDriver = "mysql"
 )
 
-//DbConn returns connection to database
+//DbConn returns connectiosn to database
 func DbConn() (db *sql.DB) {
-	db, err := sql.Open(dbHost, dbUser+":"+dbPass+"@/"+dbName)
+	db, err := sql.Open(dbDriver, fmt.Sprintf("%s:%s@%s/%s", dbUser, dbPass, dbURL, dbName))
 	if err != nil {
 		panic(err.Error())
 	}

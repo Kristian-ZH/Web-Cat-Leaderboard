@@ -1,21 +1,20 @@
-# Start from golang v1.11 base image
-FROM golang:1.11
+#############      builder       #############
+FROM golang:1.12.5 AS builder
 
-# Set the Current Working Directory inside the container
-WORKDIR $GOPATH/s/Web-Cat-Leaderboard
-
-# Copy everything from the current directory to the PWD(Present Working Directory) inside the container
+WORKDIR /go/src/github.com/leaderboard/Web-Cat-Leaderboard
 COPY . .
+RUN go get github.com/go-sql-driver/mysql
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install \
+  ./...
 
-# Download all the dependencies
-# https://stackoverflow.com/questions/28031603/what-do-three-dots-mean-in-go-command-line-invocations
-RUN go get -d -v ./...
+#############      apiserver     #############
+FROM alpine:3.8 AS apiserver
 
-# Install the package
-RUN go install -v ./...
+RUN apk add --update bash curl tzdata
 
-# This container exposes port 8080 to the outside world
-EXPOSE 8080
+COPY --from=builder /go/bin/Web-Cat-Leaderboard /Web-Cat-Leaderboard
 
-# Run the executable
-CMD ["main"]
+WORKDIR /
+
+COPY form form/
+ENTRYPOINT ["/Web-Cat-Leaderboard"]

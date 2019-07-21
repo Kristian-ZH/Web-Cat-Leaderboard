@@ -8,7 +8,9 @@ import (
 	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard"
 )
 
-var tmpl = template.Must(template.ParseGlob("form/*"))
+var tmpl = template.Must(template.ParseGlob("/form/*"))
+
+//var tmpl = template.Must(template.ParseGlob("form/*"))
 
 //Index handles the http requst and response
 func Index(w http.ResponseWriter, r *http.Request) {

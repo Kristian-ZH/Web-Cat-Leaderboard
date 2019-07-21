@@ -10,7 +10,7 @@ import (
 
 var (
 	dbUser = os.Getenv("DB_USERNAME")
-	dbPass = os.Getenv("DB_PASSWORDE")
+	dbPass = os.Getenv("DB_PASSWORD")
 	dbHost = os.Getenv("DB_HOST")
 	dbName = os.Getenv("DB_NAME")
 )

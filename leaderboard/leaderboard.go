@@ -1,15 +1,20 @@
 package leaderboard
 
 import (
+	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/data"
+	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/session"
 )
 
 var (
-	userNames   []data.User
-	assignments []data.Assignment
-	table       [][]string
+	//WebCatDomain is the domain name of the WebCat
+	WebCatDomain = os.Getenv("WEBCAT_DOMAIN") //http://grader.sapera.org/WebObjects/Web-CAT.woa
+	userNames    []data.User
+	assignments  []data.Assignment
+	table        [][]string
 )
 
 const (
@@ -20,9 +25,15 @@ const (
 )
 
 //GetLeaderboardTable retuns string matrix with the scores from all submissions
-func GetLeaderboardTable() *[][]string {
+func GetLeaderboardTable(r *http.Request) *[][]string {
 	assignments = GetAssignments()
 	userNames = GetUserNames()
+	isExist := isCurrentUserExistsInCourse(r, &userNames)
+
+	if !isExist {
+		return nil
+	}
+
 	table = make([][]string, len(userNames)+1)
 	for i := range table {
 		table[i] = make([]string, len(assignments)+ScoreTableOffseet)
@@ -44,6 +55,42 @@ func GetLeaderboardTable() *[][]string {
 	applyTotalScores()
 	sortScores()
 	return &table
+}
+
+func isCurrentUserExistsInCourse(r *http.Request, users *[]data.User) bool {
+	currentSessionID := getSessionID(r)
+	currentUserID := getUserID(r, currentSessionID, users)
+
+	if currentSessionID == "" || currentUserID == -1 {
+		return false
+	}
+	for _, user := range *users {
+		if user.ID == currentUserID {
+			return true
+		}
+	}
+
+	return false
+}
+
+func getSessionID(r *http.Request) string {
+	currentSession, err := r.Cookie(session.SessionCookieName)
+	if err != nil {
+		return ""
+	}
+
+	return currentSession.Value
+}
+
+func getUserID(r *http.Request, sessionID string, users *[]data.User) int64 {
+	sessions := GetSessions()
+	for _, session := range sessions {
+		if session.SessionID == sessionID {
+			return session.UserID
+		}
+	}
+
+	return -1
 }
 
 func saveSubmissionInTable(submission *data.Submission) {

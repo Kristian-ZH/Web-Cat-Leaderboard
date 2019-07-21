@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/session"
+
 	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/data"
 
 	"github.com/leaderboard/Web-Cat-Leaderboard/database"
@@ -102,4 +104,30 @@ func GetSubmissions() []data.Submission {
 	}
 	defer db.Close()
 	return submissions
+}
+
+//GetSessions returns slice with current logged sessions in the database
+func GetSessions() []session.Session {
+	db := database.DbConn()
+	selectQuery := "SELECT CSESSIONID, CUSERID " +
+		"FROM TLOGINSESSION"
+	selDB, err := db.Query(selectQuery)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var sessionID string
+	var userID int64
+
+	sessions := []session.Session{}
+	for selDB.Next() {
+		err = selDB.Scan(&sessionID, &userID)
+		if err != nil {
+			panic(err.Error())
+		}
+		session := session.NewSession(sessionID, userID)
+		sessions = append(sessions, *session)
+	}
+	defer db.Close()
+	return sessions
 }

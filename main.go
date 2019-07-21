@@ -12,12 +12,16 @@ var tmpl = template.Must(template.ParseGlob("form/*"))
 
 //Index handles the http requst and response
 func Index(w http.ResponseWriter, r *http.Request) {
-	table := leaderboard.GetLeaderboardTable()
-	tmpl.ExecuteTemplate(w, "Index", table)
+	table := leaderboard.GetLeaderboardTable(r)
+	if table == nil {
+		http.Redirect(w, r, leaderboard.WebCatDomain, http.StatusSeeOther)
+	} else {
+		tmpl.ExecuteTemplate(w, "Index", table)
+	}
 }
 
 func main() {
 	log.Println("Server started")
-	http.HandleFunc("/leaderboard", Index)
+	http.HandleFunc("/WebObjects/Web-CAT.woa/leaderboard", Index)
 	http.ListenAndServe(":80", nil)
 }

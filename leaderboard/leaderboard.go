@@ -5,8 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/data"
-	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/session"
+	"github.com/KristianZH/Web-Cat-Leaderboard/leaderboard/data"
+	"github.com/KristianZH/Web-Cat-Leaderboard/leaderboard/session"
 )
 
 var (

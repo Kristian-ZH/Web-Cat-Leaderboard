@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/session"
+	"github.com/KristianZH/Web-Cat-Leaderboard/leaderboard/session"
 
-	"github.com/leaderboard/Web-Cat-Leaderboard/leaderboard/data"
+	"github.com/KristianZH/Web-Cat-Leaderboard/leaderboard/data"
 
-	"github.com/leaderboard/Web-Cat-Leaderboard/database"
+	"github.com/KristianZH/Web-Cat-Leaderboard/database"
 )
 
 var (
